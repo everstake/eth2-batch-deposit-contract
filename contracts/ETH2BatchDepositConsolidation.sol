@@ -28,21 +28,25 @@ contract BatchDepositConsolidation {
             args.length % depositArgsLength == 0,
             "wrong input"
         );
+        require(
+            withdrawAddress != address(0),
+            "zero address"
+        );
+        
         uint count = args.length / depositArgsLength;
         require(count == values.length, "mismatched num of args");
 
         uint signatureStart;
         uint depositDataRootStart;
-        uint depositDataRootEnd;
+        uint256 totalValue;
 
         bytes memory rawWithdrawAuthority = abi.encodePacked(withdrawType, hex"0000000000000000000000", withdrawAddress);
-
         for (uint j = 0; j < count; j++) {
             unchecked
             {
                 signatureStart = j * depositArgsLength + pubkeyLength;
                 depositDataRootStart = signatureStart + signatureLength;
-                depositDataRootEnd = depositDataRootStart + depositDataRootLength;
+                totalValue += values[j];
             }
     
             depositContract.deposit{value: values[j] }(
@@ -50,8 +54,10 @@ contract BatchDepositConsolidation {
                 rawWithdrawAuthority,
                 args[signatureStart : depositDataRootStart],
                 // bytes32 depositDataRoot
-                bytes32(args[depositDataRootStart : depositDataRootEnd])
+                bytes32(args[depositDataRootStart : depositDataRootStart + depositDataRootLength])
             );
         }
+
+        require(totalValue == msg.value, "value");
     }
 }

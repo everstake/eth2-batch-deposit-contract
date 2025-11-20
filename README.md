@@ -1,4 +1,4 @@
-# ETH2 Batch Deposit Contract (`node:test` and `viem`)
+# ETH2 Batch Deposit Contract
 
 This repository contains a Solidity smart contract that enables **batch deposits** to the official [Ethereum 2.0 Deposit Contract](https://github.com/ethereum/eth2.0-specs) in a **single transaction**.
 
@@ -34,6 +34,6 @@ npx hardhat test nodejs
 ```
 
 
-## 🧾 License
+## License
 
 BSD-3-Clause-1 © 2025 — Everstake
